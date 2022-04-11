@@ -2,12 +2,10 @@ import './App.css';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import {useCollectionData} from 'react-firebase-hooks/firestore';
 import { useRef, useState } from 'react';
-import { async } from '@firebase/util';
+
 
 firebase.initializeApp({
   apiKey: "AIzaSyBQcFjqGIDKXoQ0kSeXWXQNkeMMyTSTAQY",
@@ -29,7 +27,7 @@ function App() {
   return (
     <div className="App">
     <header>
-      <h1>🔥💬</h1>
+      <h1>💬Say something💬</h1>
       <SignOut/>
       </header>
       <section>
@@ -108,7 +106,7 @@ function ChatRoom(){
 
       return(
       <div className={`message ${messageClass}`}>
-      <img src={photoURL}/>
+      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
       <p>{text}</p>
       </div>
       
