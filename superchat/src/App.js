@@ -6,6 +6,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import {useCollectionData} from 'react-firebase-hooks/firestore';
+import { useState } from 'react';
 
 firebase.initializeApp({
   apiKey: "AIzaSyBQcFjqGIDKXoQ0kSeXWXQNkeMMyTSTAQY",
@@ -61,19 +62,36 @@ function ChatRoom(){
   const query = messagesRef.orderBy('createdAt').limit(25)
 
   const[messages] = useCollectionData(query, {idfield: 'id'})
+  const [formvalue, SetFormValue] = useState('');
 
   return(
     <>
       <div>
         {messages && messages.map(msg=><ChatMessage key={msg.id} message={msg}/>)}
       </div>
+
+      <form>
+
+      <input/>
+
+      <button type="submit">🚀</button>
+
+      </form>
+
     </>
   )
 
     function ChatMessage(props){
-      const{text, uid} = props.message;
+      const{text, uid, photoURL} = props.message;
+      const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
-      return<p>{text}</p>
+      return(
+      <div className={`message ${messageClass}`}>
+      <img src={photoURL}/>
+      <p>{text}</p>
+      </div>
+      
+      )
     }
 
 }
