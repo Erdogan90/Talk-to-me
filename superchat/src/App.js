@@ -7,6 +7,7 @@ import { getAnalytics } from "firebase/analytics";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import {useCollectionData} from 'react-firebase-hooks/firestore';
 import { useState } from 'react';
+import { async } from '@firebase/util';
 
 firebase.initializeApp({
   apiKey: "AIzaSyBQcFjqGIDKXoQ0kSeXWXQNkeMMyTSTAQY",
@@ -62,7 +63,24 @@ function ChatRoom(){
   const query = messagesRef.orderBy('createdAt').limit(25)
 
   const[messages] = useCollectionData(query, {idfield: 'id'})
-  const [formvalue, SetFormValue] = useState('');
+
+  const [formValue, SetFormValue] = useState('');
+
+  const sendMessage = async(e)=>{
+
+    e.preventDefault();
+    const {uid, photoURL} = auth.currentUser;
+
+    await messagesRef.add({
+      text: formValue,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid,
+      photoURL
+    });
+
+    SetFormValue('');
+
+  }
 
   return(
     <>
@@ -70,9 +88,9 @@ function ChatRoom(){
         {messages && messages.map(msg=><ChatMessage key={msg.id} message={msg}/>)}
       </div>
 
-      <form>
+      <form onSubmit={sendMessage}>
 
-      <input/>
+      <input value={formValue} onChange={(e)=>SetFormValue(e.target.value)}/>
 
       <button type="submit">🚀</button>
 
