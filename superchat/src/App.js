@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import {useCollectionData} from 'react-firebase-hooks/firestore';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { async } from '@firebase/util';
 
 firebase.initializeApp({
@@ -28,13 +28,13 @@ function App() {
 
   return (
     <div className="App">
-        <section>
+    <header>
+      <h1>🔥💬</h1>
+      <SignOut/>
+      </header>
+      <section>
         {user ? <ChatRoom/> : <SignIn />}
       </section>
-
-      <header className="App-header">
-      </header>
-
   
     </div>
   );
@@ -53,12 +53,12 @@ const signInWithGoogle=()=>{
 
 function SignOut(){
   return auth.currentUser && (
-    <button onClick={()=>auth.signOut}>Sign Out</button>
+    <button className="sign-out" onClick={()=>auth.signOut()}>Sign Out</button>
   )
 }
 
 function ChatRoom(){
-
+  const dummy = useRef()
   const messagesRef = firestore.collection('messages');
   const query = messagesRef.orderBy('createdAt').limit(25)
 
@@ -80,13 +80,16 @@ function ChatRoom(){
 
     SetFormValue('');
 
+    dummy.current.scrollIntoView({behavior: 'smooth'})
+
   }
 
   return(
     <>
-      <div>
+      <main>
         {messages && messages.map(msg=><ChatMessage key={msg.id} message={msg}/>)}
-      </div>
+        <div ref={dummy}></div>
+      </main>
 
       <form onSubmit={sendMessage}>
 
